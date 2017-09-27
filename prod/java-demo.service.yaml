@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: java-demo
+  name: java-demo
+  selfLink: /api/v1/namespaces/default/services/java-demo
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 31398
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: java-demo
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
