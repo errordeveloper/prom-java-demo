@@ -1,6 +1,6 @@
 [environments]
   [environments.development]
-    name = "ideal-fox"
+    name = "java-demo"
     namespace = "default"
     wait = false
     watch = false
