@@ -1,0 +1,1 @@
+{"jobID":"1f594637-f056-8820-d209-30c55d866322","spec":{"type":"policy","cause":{"Message":"","User":"ilya ilya@weave.works"},"spec":{"default/java-demo":{"add":{"locked":"true"},"remove":null}}},"result":null}
