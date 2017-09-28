@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "3"
+    flux.weave.works/locked: "true"
   creationTimestamp: null
   generation: 1
   labels:
