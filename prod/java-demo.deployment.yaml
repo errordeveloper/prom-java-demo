@@ -11,7 +11,7 @@ metadata:
   name: java-demo
   selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/java-demo
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: java-demo
