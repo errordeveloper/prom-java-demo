@@ -27,7 +27,7 @@ spec:
         app: java-demo
     spec:
       containers:
-      - image: gcr.io/dx-general/java-demo:604ac915fff9cc70d60025d735e1a79cae83b0bf
+      - image: gcr.io/dx-general/java-demo:123
         imagePullPolicy: IfNotPresent
         name: server
         ports:
