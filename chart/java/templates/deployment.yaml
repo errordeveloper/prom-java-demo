@@ -1,31 +1,38 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: java-demo
   labels:
-    draft: {{ default "draft-app" .Values.draft }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: java-demo
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        draft: {{ default "draft-app" .Values.draft }}
-        app: {{ template "fullname" . }}
+        app: java-demo
     spec:
       containers:
-      - name: {{ .Chart.Name }}
+      - name: server
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
+          initialDelaySeconds: 120
+          periodSeconds: 20
           httpGet:
-            path: /
+            path: /health
             port: {{ .Values.service.internalPort }}
         readinessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 30
           httpGet:
-            path: /
+            path: /health
             port: {{ .Values.service.internalPort }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+          limits:
+            cpu: 400m
+            memory: 1024Mi
+          requests:
+            cpu: 200m
+            memory: 512Mi
