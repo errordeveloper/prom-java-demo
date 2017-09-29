@@ -4,6 +4,8 @@ metadata:
   name: java-demo
   labels:
     app: java-demo
+  annotations:
+    prometheus.io/path: "/prometheus"
 spec:
   type: {{ .Values.service.type }}
   ports:
