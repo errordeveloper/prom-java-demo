@@ -22,3 +22,9 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### VisualStudio Code ###
+.vscode
+
+### Other Stuff
+samples.csv
