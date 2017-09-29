@@ -7,7 +7,7 @@ build:
 	docker build -t errordeveloper/prom-java-demo .
 
 deps-cache:
-	mvn dependency:resolve
+	mvn dependency:go-offline
 	mkdir deps-cache
 	cp -a ~/.m2 deps-cache/repo
 	printf "FROM maven:3.5-jdk-8-alpine\nCOPY repo /root/.m2\n" > deps-cache/Dockerfile
