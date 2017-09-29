@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      chart: draftd-v0.7.0
+    name: draftd
+    namespace: kube-system
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: draft
+        name: draftd
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: draft
+          name: draftd
+      spec:
+        containers:
+        - args:
+          - start
+          - --registry-url=gcr.io/dx-general
+          - --registry-auth=
+          - --basedomain=
+          - --ingress-enabled=false
+          - --debug=true
+          env:
+          - name: DRAFT_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: DOCKER_HOST
+            value: tcp://localhost:2375
+          ## We are using a fork of Draft, which has support for GCR authentication
+          ## see https://github.com/Azure/draft/issues/355 for more info
+          image: gcr.io/dx-general/draft:gcr-support
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: draftd
+          ports:
+          - containerPort: 44135
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        - args:
+          - --insecure-registry=10.0.0.0/24
+          env:
+          - name: DOCKER_DRIVER
+            value: overlay
+          image: docker:17.05.0-ce-dind
+          imagePullPolicy: IfNotPresent
+          name: dind
+          securityContext:
+            privileged: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/docker
+            name: docker-graph-storage
+        dnsPolicy: ClusterFirst
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            sizeLimit: "0"
+          name: docker-graph-storage
