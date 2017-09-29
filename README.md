@@ -1,57 +1,60 @@
-# v1: Hello, World!
+# v2: Hit Counter
 
-First, let's take a look at the code
+First, let's take a look at the new version of the code
 ```
 cat src/main/java/works/weave/promjavademo/PromJavaDemoApplication.java
 ```
 
-Our startup is building the best greeting app, we are pre-launching it at
-JavaOne in San Francisco today, all Java developers will be talking about it.
-We are all set to launch this app and we have picked the best tools. We will
-be seeing millions of vistiors. The app is very simple right now, but we will
-add more features next week. Right now, we just want to make sure we can run
-it on Kuberentes, as it's the way to go, and of course we are buidling it on
-Java! We will be deploying dozens of microservices, and will probably add some
-AI components to personalise the greetings without knowing up-front who the
-user is.
+We've added a counter for vistors who hit `/`, and we can view it at `/hits`. Awesome!
 
-The repo has some config files, like `draft.toml`, some stuff in `chart/` and
-most importantly we already have out `Dockerfile` that uses latest features
-in Docker – multi-stage builds, which allows us to have a very tiny JRE-only
-container that we will deploy.
-
-Let's Deploy it to Kubernetes
+Deploy it to Kubernetes and keep draft running
 ```
 draft up
 ```
 
-Wait for external IP address
+Check out what it does now
 ```
-kubectl get svc java-demo --watch
-```
-
-
-While waiting, we have found a handy command to grab the IP
-```
-kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+curl http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
 ```
 
-Let's check it out
+Same thing!
+
+Throw some load at it once again
 ```
-curl http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
+ab -n 300 -c 100 http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
 ```
 
-As millions of users will be visiting our app, let's throw some load at it and
-make sure it can stand up to it
+And have a look at the count
 ```
-ab -n 300 -c 100 http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
+curl http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/hits
 ```
 
-That's great! But how are we going to know we provide good service and every user
-sees a greeting very quickly?
+Now let's run our load test in another terminal for a longer period...
 
-Checkout next version of the app to find out more...
+And we can also write a simple script to sample hit counts and store those in a CSV file.
+Of course, we don't have time to look mess around with JMeter or anything like that, we
+will write this in bash!
 ```
-git checkout -q v2-hit-counter
+cat collect_samples.sh
+```
+
+LGTM; run it!
+
+```
+./collect_samples.sh
+```
+
+So what could possibly go wrong?
+
+```
+less samples.csv
+```
+
+Hm... may be there is a better way to do this on Kubernetes?
+
+Checkout v3 to see what this would look like!
+
+```
+git checkout -q v3-basic-prom-metrics
 cat README.md
 ```
