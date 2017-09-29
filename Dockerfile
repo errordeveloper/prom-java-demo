@@ -1,5 +1,9 @@
-FROM maven:3.5-jdk-8-alpine as BUILD
+FROM errordeveloper/prom-java-demo-deps as DEPS
+COPY . /usr/src/app
+RUN mvn -f /usr/src/app/pom.xml dependency:resolve
 
+FROM maven:3.5-jdk-8-alpine as BUILD
+COPY --from=DEPS /root/.m2 /root/.m2
 COPY . /usr/src/app
 RUN mvn -f /usr/src/app/pom.xml clean package
 
