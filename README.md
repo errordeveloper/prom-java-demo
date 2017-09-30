@@ -1,60 +1,44 @@
-# v2: Hit Counter
+# v4: Prometheus
 
-First, let's take a look at the new version of the code
+First, new version of the code
 ```
 cat src/main/java/works/weave/promjavademo/PromJavaDemoApplication.java
 ```
 
-We've added a counter for vistors who hit `/`, and we can view it at `/hits`. Awesome!
+So we have actually removed the counter, okay!
 
-Deploy it to Kubernetes and keep draft running
+We have added Micrometer library, which is the best Java metrics library that we could find on The Internet,
+and it support Prometheus and Spring Boot very well!
+
+Let's deploy the new version and see what `/prometheus` endpoint looks like:
 ```
 draft up
 ```
 
-Check out what it does now
+Check this out!
 ```
-curl http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
-```
-
-Same thing!
-
-Throw some load at it once again
-```
-ab -n 300 -c 100 http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
+curl http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/prometheus
 ```
 
-And have a look at the count
+Try scaling it up a bit more
 ```
-curl http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/hits
-```
-
-Now let's run our load test in another terminal for a longer period...
-
-And we can also write a simple script to sample hit counts and store those in a CSV file.
-Of course, we don't have time to look mess around with JMeter or anything like that, we
-will write this in bash!
-```
-cat collect_samples.sh
+kubectl scale deployment java-demo --replicas 6
 ```
 
-LGTM; run it!
-
+Throw even load at it once again
 ```
-./collect_samples.sh
-```
-
-So what could possibly go wrong?
-
-```
-less samples.csv
+ab -n 300 -c 100 http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
 ```
 
-Hm... may be there is a better way to do this on Kubernetes?
-
-Checkout v3 to see what this would look like!
-
+And have a look at the metrics
 ```
-git checkout -q v3-basic-prom-metrics
-cat README.md
+curl http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/metrics
 ```
+
+Next, go to Weave Cloud Monitor and find the metrics our app exposes using notebook UI...
+
+---------
+
+Now we are ready to run out awesome greetings app, and do all the fancy AI stuff and all that.
+
+Next, lets's see what it takes to deploy a more sophisticated app to production with Weave Cloud deploy!
