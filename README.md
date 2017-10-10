@@ -3,8 +3,8 @@
 
 Get the code
 ```
-git clone https://github.com/errordeveloper/nodejs-java-demo
-cd nodejs-java-demo
+git clone https://github.com/errordeveloper/prom-java-demo
+cd prom-java-demo
 cat README.md
 ```
 
