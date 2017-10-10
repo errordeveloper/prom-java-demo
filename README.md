@@ -14,19 +14,19 @@ draft up
 
 Check out what it does now
 ```
-curl http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
+curl http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
 ```
 
 Same thing!
 
 Throw some load at it once again
 ```
-ab -n 300 -c 100 http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
+ab -n 300 -c 100 http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/
 ```
 
 And have a look at the count
 ```
-curl http://`kubectl get svc nodejs-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/hits
+curl http://`kubectl get svc java-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`/hits
 ```
 
 Now let's run our load test in another terminal for a longer period...
